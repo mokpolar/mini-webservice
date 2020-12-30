@@ -50,18 +50,23 @@
       <h1 class="display-4">Mini Web Service</h1>
       <p class="lead mb-0"><a href="#" class="text-white">You could subscribe this page</a></p>
     </div>
-<br>
-<form action="/page/set_email" method="post">
-  <div class="form-row">
-    <div class="col">
-      <input type="email" class="form-control" name="user_email">
-      <input type="hidden" name="page_id" value="A">
+<p class="lead mb-2">
+  {% if user_email != null %}
+  You are subscribing now. {{ user_email }}
+  {% else %}
+  <form action="/page/set_email" method="post">
+    <div class="form-row">
+      <div class="col">
+        <input type="email" class="form-control" name="user_email">
+        <input type="hidden" name="page_id" value="A">
+      </div>
+      <div class="col">
+    <button type="submit" class="btn btn-primary">Subscribe</button>
+      </div>
     </div>
-    <div class="col">
-  <button type="submit" class="btn btn-primary">Subscribe</button>
-    </div>
-  </div>
-</form>
+  </form>
+{% endif %}
+</p>
 
   </div>
 

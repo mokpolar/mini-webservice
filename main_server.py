@@ -2,6 +2,8 @@ from flask import Flask, jsonify, request, render_template, make_response
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from flask_cors import CORS
 from view import page
+
+from control.user_mgmt import User
 import os
 
 
@@ -32,7 +34,7 @@ app = Flask(__name__, static_url_path = '/static')
 CORS(app) 
 
 # 보안을 높이려면 서버를 켤 때 마다 값을 달리해야 하지만, 테스트를 위해 고정값으로
-app.secure_key = 'jy_server' 
+app.secret_key = 'jy_server' 
 
 # blueprint 등록
 app.register_blueprint(page.page_abtest, url_prefix='/page')
