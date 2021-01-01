@@ -53,6 +53,8 @@
 <p class="lead mb-2">
   {% if user_email != null %}
   You are subscribing now. {{ user_email }}
+  <a class="btn btn-primary" href="/page/logout" role="button">Unsubscribe</a>
+
   {% else %}
   <form action="/page/set_email" method="post">
     <div class="form-row">

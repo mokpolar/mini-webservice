@@ -34,7 +34,7 @@ class User(UserMixin):
     def find(user_email):
         mysql_db = conn_mysqldb()
         db_cursor = mysql_db.cursor()
-        sql = "SELECT * FROM user_info WHERE USER_ID = '" + str(user_email) + "'" 
+        sql = "SELECT * FROM user_info WHERE USER_EMAIL = '" + str(user_email) + "'" 
         print(sql)
         db_cursor.execute(sql)
 
@@ -46,7 +46,7 @@ class User(UserMixin):
         return user
 
     @staticmethod
-    def create(user_email, blog_id):
+    def create(user_email, page_id):
         user = User.find(user_email)
 
         if user == None:
@@ -59,3 +59,12 @@ class User(UserMixin):
         else:
             return user
 
+    @staticmethod
+    def delete(user_id):
+
+        mysql_db = conn_mysqldb()
+        db_cursor = mysql_db.cursor()
+        sql = "DELETE FROM user_info WHERE USER_ID = %d" % (user_id)
+        deleted = db_cursor.execute(sql)
+        mysql_db.commit()
+        return deleted

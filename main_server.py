@@ -34,6 +34,7 @@ app = Flask(__name__, static_url_path = '/static')
 CORS(app) 
 
 # 보안을 높이려면 서버를 켤 때 마다 값을 달리해야 하지만, 테스트를 위해 고정값으로
+# 이 secret key 가 있어야 flask 서버가 세션정보를 생성할 수 있음
 app.secret_key = 'jy_server' 
 
 # blueprint 등록
@@ -45,7 +46,7 @@ login_manager = LoginManager()
 # 로그인 매니저에 앱 등록. (플래스크 객체를)
 login_manager.init_app(app)
 
-# 세션을 보다 복잡하게 만들기
+# 세션정보 보다 복잡하게 만들기. 
 login_manager.session_protection = 'strong'
 
 # login_manager 안에 있는 user_loader 데코레이터 사용
