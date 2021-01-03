@@ -39,7 +39,7 @@
   <header class="blog-header py-3">
     <div class="row flex-nowrap justify-content-between align-items-center">
       <div class="col-4 pt-1">
-        <a class="text-muted" href="#">Mini Web Service : B Page</a>
+        <a class="text-muted" href="#">Mini Web Servic : B Page</a>
       </div>
     </div>
   </header>
@@ -50,28 +50,33 @@
       <h1 class="display-4">Mini Web Service</h1>
       <p class="lead mb-0"><a href="#" class="text-white">You could subscribe this page</a></p>
     </div>
-<br>
-<form>
-<form action="/page/set_email" method="get">
-  <div class="form-row">
-    <div class="col">
-      <input type="email" class="form-control" name="example@email.com">
-      <input type="hidden" name="page_id" value="B">
-    </div>
-    <div class="col">
-  <button type="submit" class="btn btn-primary">Subscribe</button>
-    </div>
-  </div>
-</form>
+<p class="lead mb-2">
+  {% if user_email != null %}
+  You are subscribing now. {{ user_email }}
+  <a class="btn btn-primary" href="/page/logout" role="button">Unsubscribe</a>
 
-</form>
+  {% else %}
+  <form action="/page/set_email" method="post">
+    <div class="form-row">
+      <div class="col">
+        <input type="email" class="form-control" name="user_email">
+        <input type="hidden" name="page_id" value="B">
+      </div>
+      <div class="col">
+    <button type="submit" class="btn btn-primary">Subscribe</button>
+      </div>
+    </div>
+  </form>
+{% endif %}
+</p>
+
   </div>
 
 
 
 <main role="main" class="container">
   <div class="row">
-    <div class="col-md-8 blog-main">
+    <div class="blog-main">
 
 
       <div class="blog-post">

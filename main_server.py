@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template, make_response
+from flask import Flask, jsonify, request, render_template, make_response, session
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from flask_cors import CORS
 from view import page
@@ -63,6 +63,19 @@ def load_user(user_id):
 @login_manager.unauthorized_handler
 def unauthorized():
     return make_response(jsonify(success=False), 401)
+
+# before_request : 매번 요청할 때 마다 이 함수가 미리 불림
+@app.before_request
+def app_before_request():
+    # session 객체에는 모든 HTTP request에 대한 세션 정보가 자동으로 다 담긴다. 
+    if 'client_id' not in session:
+        # 이 session 객체에 클라이언트 아이디 추가 (HTTP 요청의 실제 IP 정보를)
+        # Blue print에 다 담겨있기 때문에 여기서만 불러줘도 가능
+        # route /main 을 실행하기 전에 app_before_request가 불려져 있는 상태
+        session['client_id'] = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+
+
+
 
 
 if __name__ == '__main__':

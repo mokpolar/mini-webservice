@@ -1,5 +1,6 @@
-from flask import Flask, Blueprint, request, render_template, make_response, jsonify, redirect, url_for
+from flask import Flask, Blueprint, request, render_template, make_response, jsonify, redirect, url_for, session
 from control.user_mgmt import User
+from control.session_mgmt import Session
 from flask_login import login_user, current_user, logout_user
 import datetime
 
@@ -12,17 +13,24 @@ page_abtest = Blueprint('page', __name__)
 def main():
     # 현재 로그인 된 사용자인지를 확인해야 함
     if current_user.is_authenticated:
+        # 세션 정보를 갖고 와서 A B 를 번갈아가며 렌더링
+        web_page_name = Session.get_page(current_user.page_id)
         # 로그인 시에 flask_login을 사용해서 사용자를 명시하는 작업이 그 전에 있어야 함
         # true 이면 로그인 된 사용자니까 
         # main_server에서 구현한 user_loader를 사용
         # 사용자 정보는 mysql db에서 갖고오는 것으로 static method로 선언한 get함수
         # 그 id를 기반으로 db에서 사용자 정보를 갖고옴
         # 그리고 그 객체는 current_user 에 자동으로 들어가게 됨
-        return render_template('page_a.html', user_email = current_user.user_email)
+        Session.save_session_info(session['client_id'], current_user.user_email, web_page_name)
+
+        return render_template(web_page_name, user_email = current_user.user_email)
     else:
+        web_page_name = Session.get_page()
+        # 현재 user_email 정보는 없는 상태로 빠지는 것이기 때문에 anonumous로 들어감. 
+        Session.save_session_info(session['client_id'], 'anonymous', web_page_name)
         # 그렇지 않은 경우에는 그냥 페이지 렌더링
         # 진자에서 else 부분
-        return render_template('page_a.html')
+        return render_template(web_page_name)
 
 
 @page_abtest.route('/set_email', methods = ['GET', 'POST'])
@@ -35,10 +43,13 @@ def set_email():
 
         # content type 이 application/json 인 경우, 현재는 form으로 전달되어 있기 때문에 content type이  application/x-www-form-urlencoded 으로 출력
         #print('set_email', request.get_json())
-        print('set_email', request.form['user_email'])
+        #print('set_email', request.form['user_email'])
+
+        # hidden 부분에는 page id 도 값이 들어있는데 이 부분 출력
+        #print('page_id', request.form['page_id'])
 
         # user 생성.
-        user = User.create(request.form['user_email'], 'A')
+        user = User.create(request.form['user_email'], request.form['page_id'])
 
         # flask_login 라이브러리로 사용자 세션정보를 생성해서 사용자 웹 브라우저에 같이 전송. 
         # 사용자 웹 브라우저는 이 정보를 저장하고 있다가 다시 서버에 요청시 이 쿠키정보를 포함하여 사용자를 구분할 수 있도록 함 

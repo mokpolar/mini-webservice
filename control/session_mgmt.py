@@ -27,9 +27,9 @@ class Session():
         if page_id == None:
             if Session.session_count == 0:
                 Session.session_count = 1
-                return 'page_a.html'
+                return Session.page['A']
             else:
-                BlogSession.session_count = 0
-                return 'page_b.html'
+                Session.session_count = 0
+                return Session.page['B']
         else:
             return Session.page[page_id]
